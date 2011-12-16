@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:View xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark" title="APN Service for Adobe AIR"
+		creationComplete="view1_creationCompleteHandler(event)"
+		>
+	
+	<fx:Script>
+		<![CDATA[
+			/**
+			 * iOS Apple Push Notification Service extension example
+			 * @author Piotr Koscierzynski, flashsimulations.com
+			 * 
+			 * 
+			 * 
+			 * */
+			
+			import mx.events.FlexEvent;
+			
+			import flash.filesystem.File;
+			import flash.filesystem.FileMode;
+			import flash.filesystem.FileStream;
+			
+			import pl.randori.air.nativeextensions.ios.APNSExtension;
+			import pl.randori.air.nativeextensions.ios.APNSExtensionEvent;
+			
+			private var apnServiceExtension:APNSExtension; 
+			
+			//Example call
+			private function test() : void {
+				apnServiceExtension.registerForRemoteNotifications();				
+			}
+			
+			protected function button1_clickHandler(event:MouseEvent):void
+
+			{
+				test();
+
+			}
+			
+			protected function onRemoteNotificationEvent(e:APNSExtensionEvent):void {
+				infoArea.text += '\nReceived event: '+e.eventInfo;	
+			}
+			
+			protected function view1_creationCompleteHandler(event:FlexEvent):void
+
+			{
+				apnServiceExtension = new APNSExtension();
+				apnServiceExtension.addEventListener(APNSExtensionEvent.APN_SERVICE_EVENT, onRemoteNotificationEvent);
+				
+
+				// TODO Auto-generated method stub
+
+				
+
+			}
+			
+		]]>
+	</fx:Script>
+
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:Button left="10" right="10" top="15" label="Register to APN Service"
+			  click="button1_clickHandler(event)" horizontalCenter="0"/>
+	<s:TextArea id="infoArea" left="20" right="20" top="125" bottom="20"/>
+	<s:Label left="20" right="20" bottom="3" fontSize="14"
+			 text="© Piotr Koscierzynski | flashsimulations.com" textAlign="center"
+			 verticalAlign="middle"/>
+</s:View>

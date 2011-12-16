@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Apple Push Notifications Service native extension for Adobe AIR example application" default="publish-ios" basedir=".">
+	
+	<property file="local.properties" />
+	<property file="build.properties" />
+	
+	<target name="clean">
+		<delete dir="${app.builddir}"/>
+		<delete dir="${app.releasedir}"/>
+		<mkdir dir="${app.builddir}"/>
+		<mkdir dir="${app.releasedir}"/>
+	</target>
+	
+	<target name="copy" depends="clean">
+		<copy todir="${app.builddir}" preservelastmodified="true" verbose="true">
+			 <fileset dir="${app.sourcedir}">
+				<patternset>
+					<include name="assets/**"/>
+					<include name="*.png"/>
+					<include name="*.xml"/>
+					<include name="*.ane"/>
+				</patternset>
+			 </fileset>
+		</copy>
+	
+	</target>
+	
+	<target name="compile" depends="copy">
+		<exec executable="${MXMLC}">
+			<arg line="
+				+configname=airmobile 
+				-output ${app.builddir}/${build.swfname}
+				${app.sourcedir}/NativeAPNServiceApp.mxml 
+				-source-path+=${app.rootdir}/src
+				-load-config+=NativeAPNServiceApp_app.config
+				-swf-version=14
+			"/>
+		</exec>
+	</target>
+	
+	<target name="publish-ios" depends="compile">
+		<copy file="${app.builddir}/${build.swfname}" tofile="${app.rootdir}/${build.swfname}"/>
+		<copy file="${app.sourcedir}/${build.appDescriptor}" tofile="${app.rootdir}/${build.appDescriptor}"/>
+		
+		<exec executable="${ADT}">
+			<arg line="-package
+						-target ipa-test-interpreter
+						-provisioning-profile ${build.mobileprofile}
+						-storetype ${build.storetype}
+						-keystore ${build.keystore}
+						-storepass PASSWORD
+						${app.releasedir}/${build.name}
+						${app.descriptor}
+						${build.swfname}
+						-extdir extensions
+						-C ${app.builddir} Default.png Default@2x.png"/>
+		</exec>
+	</target>
+	
+</project>
